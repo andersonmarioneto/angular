@@ -1,0 +1,32 @@
+<!-- 
+    O parametro routerLink serve para navegar entre as rotas pré estabelecidas
+    O routerLink utitliza o SPA direfente do href que recarrega a página
+-->
+
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <div class="container-fluid">
+
+    <a class="navbar-brand" routerLink="/">
+          
+      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/angular/angular-original.svg" />
+             
+    </a>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        
+        <li class="nav-item">
+          <a class="nav-link active" routerLink="/">Inicio</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/users">Usuários</a>
+        </li>
+
+      </ul>
+      <form class="d-flex">
+        <input class="form-control me-2" type="search" placeholder="O que procura..." />
+        <button class="btn btn-success" type="submit">Pesquisar</button>
+      </form>
+    </div>
+  </div>
+</nav>
