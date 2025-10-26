@@ -6,6 +6,17 @@
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <!-- Quick dev: Tailwind Play CDN - removes need to compile Tailwind while prototyping -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    // Opcional: configurações básicas do Tailwind via CDN
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {},
+      },
+    };
+  </script>
 </head>
 <body>
   <app-root></app-root>

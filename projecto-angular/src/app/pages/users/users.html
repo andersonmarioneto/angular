@@ -1,5 +1,11 @@
-<label>Lista de Usuários</label>
-
+<!-- 
 <ul>
-    <li *ngFor="let item of users">{{ item }}</li>
-</ul>
+    <li *ngFor="let user of users">
+        <button routerLink="/users/{{user}}" class="btn btn-primary">{{ user }}</button>
+    </li>
+</ul> 
+-->
+
+<div class="row">
+    <app-user-card *ngFor="let user of users" [user]="user" class="col-md"></app-user-card>
+</div>

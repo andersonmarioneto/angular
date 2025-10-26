@@ -1,3 +1,7 @@
 ul {
-    list-style: decimal;
+    list-style: none;
+}
+
+li {
+    margin: 5px;
 }
