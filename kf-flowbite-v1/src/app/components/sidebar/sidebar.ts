@@ -1,50 +1,72 @@
-import { Component } from '@angular/core';
+import { Component, AfterViewInit, OnDestroy, Inject } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
 
 @Component({
-  selector: 'app-sidebar',
-  imports: [],
-  templateUrl: './sidebar.html',
-  styleUrl: './sidebar.css',
+    selector: 'app-sidebar',
+    templateUrl: './sidebar.html',
+    styleUrls: ['./sidebar.css'],
 })
-export class Sidebar {
-  var themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
-var themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+export class Sidebar implements AfterViewInit, OnDestroy {
+    private onClickHandler: (() => void) | null = null;
 
-// Change the icons inside the button based on previous settings
-if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-    themeToggleLightIcon.classList.remove('hidden');
-} else {
-    themeToggleDarkIcon.classList.remove('hidden');
-}
+    constructor(@Inject(DOCUMENT) private document: Document) {}
 
-var themeToggleBtn = document.getElementById('theme-toggle');
+    ngAfterViewInit(): void {
+        const themeToggleDarkIcon = this.document.getElementById('theme-toggle-dark-icon') as HTMLElement | null;
+        const themeToggleLightIcon = this.document.getElementById('theme-toggle-light-icon') as HTMLElement | null;
+        const themeToggleBtn = this.document.getElementById('theme-toggle') as HTMLElement | null;
 
-themeToggleBtn.addEventListener('click', function() {
-
-    // toggle icons inside button
-    themeToggleDarkIcon.classList.toggle('hidden');
-    themeToggleLightIcon.classList.toggle('hidden');
-
-    // if set via local storage previously
-    if (localStorage.getItem('color-theme')) {
-        if (localStorage.getItem('color-theme') === 'light') {
-            document.documentElement.classList.add('dark');
-            localStorage.setItem('color-theme', 'dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-            localStorage.setItem('color-theme', 'light');
+        if (!themeToggleBtn || !themeToggleDarkIcon || !themeToggleLightIcon) {
+            // elementos não encontrados — não faz nada
+            return;
         }
 
-    // if NOT set via local storage previously
-    } else {
-        if (document.documentElement.classList.contains('dark')) {
-            document.documentElement.classList.remove('dark');
-            localStorage.setItem('color-theme', 'light');
+        // Inicializa os ícones com base no localStorage ou preferência do sistema
+        const stored = localStorage.getItem('color-theme');
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (stored === 'dark' || (!stored && prefersDark)) {
+            themeToggleLightIcon.classList.remove('hidden');
+            themeToggleDarkIcon.classList.add('hidden');
         } else {
-            document.documentElement.classList.add('dark');
-            localStorage.setItem('color-theme', 'dark');
+            themeToggleDarkIcon.classList.remove('hidden');
+            themeToggleLightIcon.classList.add('hidden');
+        }
+
+        this.onClickHandler = () => {
+            // alterna ícones
+            themeToggleDarkIcon.classList.toggle('hidden');
+            themeToggleLightIcon.classList.toggle('hidden');
+
+            if (localStorage.getItem('color-theme')) {
+                if (localStorage.getItem('color-theme') === 'light') {
+                    this.document.documentElement.classList.add('dark');
+                    localStorage.setItem('color-theme', 'dark');
+                } else {
+                    this.document.documentElement.classList.remove('dark');
+                    localStorage.setItem('color-theme', 'light');
+                }
+
+            } else {
+                if (this.document.documentElement.classList.contains('dark')) {
+                    this.document.documentElement.classList.remove('dark');
+                    localStorage.setItem('color-theme', 'light');
+                } else {
+                    this.document.documentElement.classList.add('dark');
+                    localStorage.setItem('color-theme', 'dark');
+                }
+            }
+        };
+
+        themeToggleBtn.addEventListener('click', this.onClickHandler);
+    }
+
+    ngOnDestroy(): void {
+        if (this.onClickHandler) {
+            const themeToggleBtn = this.document.getElementById('theme-toggle') as HTMLElement | null;
+            if (themeToggleBtn) {
+                themeToggleBtn.removeEventListener('click', this.onClickHandler);
+            }
+            this.onClickHandler = null;
         }
     }
-    
-});
 }
